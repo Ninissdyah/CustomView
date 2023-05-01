@@ -42,13 +42,26 @@ public class EditTextWithClear extends AppCompatEditText {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (getCompoundDrawablesRelative()[2] != null) {
-                    float clearButtonStartPosition = (getWidth() - getPaddingEnd() - mClearButtonImage.getIntrinsicWidth());
                     boolean isButtonClicked = false;
 
-                    if (motionEvent.getX() > clearButtonStartPosition) {
-                        isButtonClicked = true;
+                    //untuk menentukan layout dari kanan ke kiri
+                    if (getLayoutDirection() == LAYOUT_DIRECTION_RTL) {
+                        //get dari button image + get padding start dari edit text
+                        float clearButtonEndPosition = mClearButtonImage.getIntrinsicWidth() + getPaddingStart();
+                        //sentuhan kita kurang dari yg di atas isbuttonclicked dijalankan
+                        if (motionEvent.getX() < clearButtonEndPosition) {
+                            isButtonClicked = true;
+                        }
+                    } else {
+                        //untuk menentukan layout dari kiri ke kanan
+                        float clearButtonStartPosition = (getWidth() - getPaddingEnd() - mClearButtonImage.getIntrinsicWidth());
+                        if (motionEvent.getX() > clearButtonStartPosition) {
+                            isButtonClicked = true;
+                        }
                     }
 
+                    //action kalo klik button down pas di klik, up habis di klik
+                    //resourcecompat manggil layout button yg di dalam drawable
                     if (isButtonClicked) {
                         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                             mClearButtonImage = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_clear_black_24dp, null);
@@ -62,9 +75,11 @@ public class EditTextWithClear extends AppCompatEditText {
                         }
                     }
                     else {
+                        //ngembaliin if yg di atasnya
                         return false;
                     }
                 }
+                //ngembaliin if yg di atasnya lagi
                 return false;
             }
         });
@@ -87,11 +102,13 @@ public class EditTextWithClear extends AppCompatEditText {
     }
 
     private void showClearButton() {
-        //menambah komponen drawable di komponen edit text, parameter start top end bottom
         setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, mClearButtonImage, null);
+        //menambah komponen drawable di komponen edit text, parameter start top end bottom
+//        setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, mClearButtonImage, null);
     }
 
     private void hideClearButton() {
         setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null);
+//        setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null);
     }
 }
